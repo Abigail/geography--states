@@ -1,9 +1,14 @@
 package Geography::States;
 
 #
-# $Id: States.pm,v 1.6 2001/04/19 23:44:39 abigail Exp abigail $
+# $Id: States.pm,v 2.1 2006/10/02 21:35:34 abigail Exp $
 #
 # $Log: States.pm,v $
+# Revision 2.1  2006/10/02 21:35:34  abigail
+# + Changes for Canada.
+#   - Newfoundland is now called Newfoundland and Labrador, with code NL.
+#   - Nunavut was added; code NU.
+#
 # Revision 1.6  2001/04/19 23:44:39  abigail
 # Fixed syntax error in POD.
 #
@@ -37,7 +42,7 @@ use strict;
 
 use vars qw /$VERSION/;
 
-($VERSION) = '$Revision: 1.6 $' =~ /([\d.]+)/;
+($VERSION) = '$Revision: 2.1 $' =~ /([\d.]+)/;
 
 my (%states);
 
@@ -193,11 +198,21 @@ Those are not listed here.
 
 Canada's I<Quebec> has two codes, the older I<PQ> and the modern I<QC>. Both
 I<PQ> and I<QC> will map to I<Quebec>, but I<Quebec> will only map to I<QC>.
-With strict mode, I<PQ> will not be listed.
+With strict mode, I<PQ> will not be listed. Similary, Newfoundland has an
+old code I<NF>, and a new code I<NL> (the province is now called
+I<Newfoundland and Labrador>).
 
 =head1 REVISION HISTORY
 
     $Log: States.pm,v $
+    Revision 2.1  2006/10/02 21:35:34  abigail
+    + Changes for Canada.
+      - Newfoundland is now called Newfoundland and Labrador, with code NL.
+      - Nunavut was added; code NU.
+
+    Revision 2.0  2006/10/02 21:06:56  abigail
+    Check in
+
     Revision 1.6  2001/04/19 23:44:39  abigail
     Fixed syntax error in POD.
 
@@ -352,9 +367,11 @@ AB	Alberta
 BC	British Columbia
 MB	Manitoba
 NB	New Brunswick
-NF	Newfoundland
+NF*	Newfoundland
+NL	Newfoundland and Labrador
 NS	Nova Scotia
 NT	Northwest Territories
+NU	Nunavut
 ON	Ontario
 PE	Prince Edward Island
 PQ*     Quebec

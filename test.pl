@@ -41,9 +41,9 @@ my @list = $usa -> state;
 print 50 == @list ? "ok 11\n" : "not ok 11\n";
 print 50 == $usa -> state ? "ok 12\n" : "not ok 12\n";
 
-$cnd = Geography::States -> new ('canada', 1);
-print $cnd ? "ok 13\n" : "not ok 13\n"; die unless $cnd;
-print $cnd -> state ('PQ') ? "not ok 14\n" : "ok 14\n";
+my $cnd1 = Geography::States -> new ('canada', 1);
+print $cnd1 ? "ok 13\n" : "not ok 13\n"; die unless $cnd1;
+print $cnd1 -> state ('PQ') ? "not ok 14\n" : "ok 14\n";
 
 my $nl = Geography::States -> new ('The Netherlands');
 print $nl ? "ok 15\n" : "not ok 15\n"; die unless $nl;
@@ -57,3 +57,6 @@ print "Queensland" eq $au -> state ('QLD') ? "ok 19\n" : "not ok 19\n";
 my $br = Geography::States -> new ('Brazil');
 print $br ? "ok 20\n" : "not ok 20\n"; die unless $br;
 print "Rondônia" eq $br -> state ('RO') ? "ok 21\n" : "not ok 21\n";
+
+print $cnd -> state ('NL') eq "Newfoundland and Labrador"
+            ? "ok 22\n" : "not ok 22\n";
