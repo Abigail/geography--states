@@ -1,4 +1,4 @@
 MANIFEST
 lib/Geography/States.pm
 Makefile.PL
-test.pl
+t/000_tests.t
