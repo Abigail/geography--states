@@ -1,50 +1,14 @@
 package Geography::States;
 
-#
-# $Id: States.pm,v 2.1 2006/10/02 21:35:34 abigail Exp $
-#
-# $Log: States.pm,v $
-# Revision 2.1  2006/10/02 21:35:34  abigail
-# + Changes for Canada.
-#   - Newfoundland is now called Newfoundland and Labrador, with code NL.
-#   - Nunavut was added; code NU.
-#
-# Revision 1.6  2001/04/19 23:44:39  abigail
-# Fixed syntax error in POD.
-#
-# Revision 1.5  2001/04/19 23:41:59  abigail
-# + Document Australia is now supported.
-# + Australia uses codes up to length 3, addapted _c_length for that.
-# + Removed require, which was there for the INIT {}
-#
-# Revision 1.4  2001/04/19 23:33:32  abigail
-# + Added data for Australia (Kirrily "Skud" Robert)
-# + Removed INIT {}; doesn't work well with mod_perl (T.J. Mather)
-# + Fixed typos/accents for Brazil (Steffen Beyer)
-#
-# Revision 1.3  2000/07/23 09:28:31  abigail
-# Fixed dependency on hash ordering when mapping "Quebec" (it worked
-#    in perl5.005, but failed in perl5.6).
-# Fixed typos in state names (Ross Baker).
-# Changed email address.
-# Changed license to from free prose to X-style license.
-#
-# Revision 1.2  1999/09/10 17:12:05  abigail
-# Added a 'require 5.005' due to the use of INIT.
-#
-# Revision 1.1  1999/09/09 07:33:54  abigail
-# Initial revision
-#
-#
-
+use 5.006;
 
 use strict;
+use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
+our $VERSION = '2009040901';
 
-($VERSION) = '$Revision: 2.1 $' =~ /([\d.]+)/;
-
-my (%states);
+my %states;
 
 sub _c_length ($) {
     lc $_ [0] eq "australia" ? 3 : 2
@@ -128,29 +92,30 @@ sub state {
     $answer -> [$answer -> [0] eq $query ? 1 : 0];
 }
 
+
+1;
     
-<<'=cut'
 =pod
 
 =head1 NAME
 
-Geography::States  --  Map states and provinces to their codes, and vica versa.
+Geography::States - Map states and provinces to their codes, and vica versa.
 
 =head1 SYNOPSIS
 
-    use Geography::States;
+ use Geography::States;
 
-    my $obj = Geography::States -> new (COUNTRY [, STRICT]);
+ my $obj = Geography::States -> new (COUNTRY [, STRICT]);
 
 
 =head1 EXAMPLES
 
-    my $canada = Geography::States -> new ('Canada');
+ my $canada = Geography::States -> new ('Canada');
 
-    my  $name          =  $canada -> state ('NF');      # Newfoundland.
-    my  $code          =  $canada -> state ('Ontario'); # ON.
-    my ($code, $name)  =  $canada -> state ('BC');      # BC, British Columbia.
-    my  @all_states    =  $canada -> state;             # List code/name pairs.
+ my  $name          =  $canada -> state ('NF');      # Newfoundland.
+ my  $code          =  $canada -> state ('Ontario'); # ON.
+ my ($code, $name)  =  $canada -> state ('BC');      # BC, British Columbia.
+ my  @all_states    =  $canada -> state;             # List code/name pairs.
 
 
 =head1 DESCRIPTION
@@ -202,51 +167,18 @@ With strict mode, I<PQ> will not be listed. Similary, Newfoundland has an
 old code I<NF>, and a new code I<NL> (the province is now called
 I<Newfoundland and Labrador>).
 
-=head1 REVISION HISTORY
-
-    $Log: States.pm,v $
-    Revision 2.1  2006/10/02 21:35:34  abigail
-    + Changes for Canada.
-      - Newfoundland is now called Newfoundland and Labrador, with code NL.
-      - Nunavut was added; code NU.
-
-    Revision 2.0  2006/10/02 21:06:56  abigail
-    Check in
-
-    Revision 1.6  2001/04/19 23:44:39  abigail
-    Fixed syntax error in POD.
-
-    Revision 1.5  2001/04/19 23:41:59  abigail
-    + Document Australia is now supported.
-    + Australia uses codes up to length 3, addapted _c_length for that.
-    + Removed require, which was there for the INIT {}
-
-    Revision 1.4  2001/04/19 23:33:32  abigail
-    + Added data for Australia (Kirrily "Skud" Robert)
-    + Removed INIT {}; doesn't work well with mod_perl (T.J. Mather)
-    + Fixed typos/accents for Brazil (Steffen Beyer)
-
-    Revision 1.3  2000/07/23 09:28:31  abigail
-    Fixed dependency on hash ordering when mapping "Quebec" (it worked
-       in perl5.005, but failed in perl5.6).
-    Fixed typos in state names (Ross Baker).
-    Changed email address.
-    Changed license to from free prose to X-style license.
-
-    Revision 1.2  1999/09/10 17:12:05  abigail
-    Added a 'require 5.005' due to the use of INIT.
-
-    Revision 1.1  1999/09/09 07:33:54  abigail
-    Initial revision
-
+=head1 DEVELOPMENT
+    
+The current sources of this module are found on github,
+L<< git://github.com/Abigail/geography--states.git >>.
 
 =head1 AUTHOR
 
-This package was written by Abigail, abigail@foad.org.
+Abigail L<< mailto:geography-states@abigail.be >>.
 
 =head1 COPYRIGHT and LICENSE
 
-This package is copyright 1999, 2000, 2001 by Abigail.
+Copyright (C) 1999 - 2001, 2009 by Abigail.
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
