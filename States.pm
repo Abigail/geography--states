@@ -1,9 +1,16 @@
 package Geography::States;
 
 #
-# $Id: States.pm,v 1.2 1999/09/10 17:12:05 abigail Exp abigail $
+# $Id: States.pm,v 1.3 2000/07/23 09:28:31 abigail Exp abigail $
 #
 # $Log: States.pm,v $
+# Revision 1.3  2000/07/23 09:28:31  abigail
+# Fixed dependency on hash ordering when mapping "Quebec" (it worked
+#    in perl5.005, but failed in perl5.6).
+# Fixed typos in state names (Ross Baker).
+# Changed email address.
+# Changed license to from free prose to X-style license.
+#
 # Revision 1.2  1999/09/10 17:12:05  abigail
 # Added a 'require 5.005' due to the use of INIT.
 #
@@ -19,7 +26,7 @@ require 5.005;  # Because of the INIT.
 
 use vars qw /$VERSION/;
 
-($VERSION) = '$Revision: 1.2 $' =~ /([\d.]+)/;
+($VERSION) = '$Revision: 1.3 $' =~ /([\d.]+)/;
 
 my (%states);
 
@@ -79,8 +86,10 @@ sub new {
         next unless $cs eq $info -> [0];
         next if $strict && $info -> [2];
         my $inf = [@$info [0, 1]];
-        $self -> {cs} -> {$info -> [0]} = $inf;
-        $self -> {cs} -> {$info -> [1]} = $inf;
+        foreach my $i (0 .. 1) {
+            $self -> {cs} -> {$info -> [$i]} = $inf unless
+                       exists $self -> {cs} -> {$info -> [$i]};
+        }
     }
     $self -> {country} = $country;
 
@@ -175,6 +184,13 @@ With strict mode, I<PQ> will not be listed.
 =head1 REVISION HISTORY
 
     $Log: States.pm,v $
+    Revision 1.3  2000/07/23 09:28:31  abigail
+    Fixed dependency on hash ordering when mapping "Quebec" (it worked
+       in perl5.005, but failed in perl5.6).
+    Fixed typos in state names (Ross Baker).
+    Changed email address.
+    Changed license to from free prose to X-style license.
+
     Revision 1.2  1999/09/10 17:12:05  abigail
     Added a 'require 5.005' due to the use of INIT.
 
@@ -184,15 +200,29 @@ With strict mode, I<PQ> will not be listed.
 
 =head1 AUTHOR
 
-This package was written by Abigail, abigail@delanet.com.
+This package was written by Abigail, abigail@foad.org.
 
 =head1 COPYRIGHT and LICENSE
 
-This package is copyright 1999 by Abigail.
+This package is copyright 1999, 2000 by Abigail.
 
-This program is free and open software. You may use, copy, modify,
-distribute and sell this program (and any modified variants) in any way
-you wish, provided you do not restrict others to do the same.
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+ 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 =cut
 
@@ -210,7 +240,7 @@ CT	Connecticut
 DC*     District of Columbia
 DE	Delaware
 FL	Florida
-FM*     Federate States of Micronesia
+FM*     Federated States of Micronesia
 GA	Georgia
 GU*     Guam
 HI	Hawaii
@@ -239,7 +269,7 @@ ND	North Dakota
 NE	Nebraska
 NH	New Hampshire
 NJ	New Jersey
-NM	New Nexico
+NM	New Mexico
 NV	Nevada
 NY	New York
 OH	Ohio
