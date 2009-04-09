@@ -2,3 +2,5 @@ MANIFEST
 lib/Geography/States.pm
 Makefile.PL
 t/000_tests.t
+Changes
+README
