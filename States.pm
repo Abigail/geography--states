@@ -1,9 +1,12 @@
 package Geography::States;
 
 #
-# $Id: States.pm,v 1.1 1999/09/09 07:33:54 abigail Exp abigail $
+# $Id: States.pm,v 1.2 1999/09/10 17:12:05 abigail Exp abigail $
 #
 # $Log: States.pm,v $
+# Revision 1.2  1999/09/10 17:12:05  abigail
+# Added a 'require 5.005' due to the use of INIT.
+#
 # Revision 1.1  1999/09/09 07:33:54  abigail
 # Initial revision
 #
@@ -12,9 +15,11 @@ package Geography::States;
 
 use strict;
 
+require 5.005;  # Because of the INIT.
+
 use vars qw /$VERSION/;
 
-($VERSION) = '$Revision: 1.1 $' =~ /([\d.]+)/;
+($VERSION) = '$Revision: 1.2 $' =~ /([\d.]+)/;
 
 my (%states);
 
@@ -160,7 +165,7 @@ One site listed I<Midway Islands> as having code I<MD>. It is not listed by
 the USPS site, and because it conflicts with I<Maryland>, it is not put in
 this listing.
 
-The USPS also as so-called I<Military "States">, with non-unique codes.
+The USPS also has so-called I<Military "States">, with non-unique codes.
 Those are not listed here.
 
 Canada's I<Quebec> has two codes, the older I<PQ> and the modern I<QC>. Both
@@ -170,6 +175,9 @@ With strict mode, I<PQ> will not be listed.
 =head1 REVISION HISTORY
 
     $Log: States.pm,v $
+    Revision 1.2  1999/09/10 17:12:05  abigail
+    Added a 'require 5.005' due to the use of INIT.
+
     Revision 1.1  1999/09/09 07:33:54  abigail
     Initial revision
 
