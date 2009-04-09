@@ -6,7 +6,7 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..16\n"; }
+BEGIN { $| = 1; print "1..21\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Geography::States;
 $loaded = 1;
@@ -48,3 +48,12 @@ print $cnd -> state ('PQ') ? "not ok 14\n" : "ok 14\n";
 my $nl = Geography::States -> new ('The Netherlands');
 print $nl ? "ok 15\n" : "not ok 15\n"; die unless $nl;
 print "Utrecht" eq $nl -> state ('UT') ? "ok 16\n" : "not ok 16\n";
+
+my $au = Geography::States -> new ('Australia');
+print $au ? "ok 17\n" : "not ok 17\n"; die unless $au;
+print "Western Australia" eq $au -> state ('WA') ? "ok 18\n" : "not ok 18\n";
+print "Queensland" eq $au -> state ('QLD') ? "ok 19\n" : "not ok 19\n";
+
+my $br = Geography::States -> new ('Brazil');
+print $br ? "ok 20\n" : "not ok 20\n"; die unless $br;
+print "Rondônia" eq $br -> state ('RO') ? "ok 21\n" : "not ok 21\n";

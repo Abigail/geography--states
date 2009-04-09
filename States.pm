@@ -1,9 +1,22 @@
 package Geography::States;
 
 #
-# $Id: States.pm,v 1.3 2000/07/23 09:28:31 abigail Exp abigail $
+# $Id: States.pm,v 1.6 2001/04/19 23:44:39 abigail Exp abigail $
 #
 # $Log: States.pm,v $
+# Revision 1.6  2001/04/19 23:44:39  abigail
+# Fixed syntax error in POD.
+#
+# Revision 1.5  2001/04/19 23:41:59  abigail
+# + Document Australia is now supported.
+# + Australia uses codes up to length 3, addapted _c_length for that.
+# + Removed require, which was there for the INIT {}
+#
+# Revision 1.4  2001/04/19 23:33:32  abigail
+# + Added data for Australia (Kirrily "Skud" Robert)
+# + Removed INIT {}; doesn't work well with mod_perl (T.J. Mather)
+# + Fixed typos/accents for Brazil (Steffen Beyer)
+#
 # Revision 1.3  2000/07/23 09:28:31  abigail
 # Fixed dependency on hash ordering when mapping "Quebec" (it worked
 #    in perl5.005, but failed in perl5.6).
@@ -22,19 +35,19 @@ package Geography::States;
 
 use strict;
 
-require 5.005;  # Because of the INIT.
-
 use vars qw /$VERSION/;
 
-($VERSION) = '$Revision: 1.3 $' =~ /([\d.]+)/;
+($VERSION) = '$Revision: 1.6 $' =~ /([\d.]+)/;
 
 my (%states);
 
-sub _c_length ($) {2}  # Might change for other countries.
+sub _c_length ($) {
+    lc $_ [0] eq "australia" ? 3 : 2
+}
 
 sub _norm ($$) {
     my ($str, $country) = @_;
-    if (_c_length ($country) == length $str) {
+    if (_c_length ($country) >= length $str) {
         $str =  uc $str;
     }
     else {
@@ -46,25 +59,26 @@ sub _norm ($$) {
     $str;
 }
 
-INIT {
-    my $country;
-    while (<DATA>) {
-        chomp;
-        last if $_ eq '__END__';
-        s/#.*//;
-        next unless /\S/;
-        if (/^<(.*)>/) {
-            $country =  lc $1;
-            $country =~ s/\s+/ /g;
-            next;
-        }
-        my ($code, $state) = split /\s+/ => $_, 2;
-        next unless defined $state;
-        my $fake = $code =~ s/\*$//;
-        my $info = [$code, $state, $fake];
-        $states {$country} -> {_norm ($code,  $country)} = $info;
-        $states {$country} -> {_norm ($state, $country)} = $info;
+# This was originally wrapped in an INIT block, to avoid having it
+# run when only compilation was wanted. However, that seems to fail
+# when used in combination with mod_perl.
+my $country;
+while (<DATA>) {
+    chomp;
+    last if $_ eq '__END__';
+    s/#.*//;
+    next unless /\S/;
+    if (/^<(.*)>/) {
+        $country =  lc $1;
+        $country =~ s/\s+/ /g;
+        next;
     }
+    my ($code, $state) = split /\s+/ => $_, 2;
+    next unless defined $state;
+    my $fake = $code =~ s/\*$//;
+    my $info = [$code, $state, $fake];
+    $states {$country} -> {_norm ($code,  $country)} = $info;
+    $states {$country} -> {_norm ($state, $country)} = $info;
 }
 
 sub new {
@@ -128,10 +142,10 @@ Geography::States  --  Map states and provinces to their codes, and vica versa.
 
     my $canada = Geography::States -> new ('Canada');
 
-    my  $name          =  $canada -> state 'NF';      # Newfoundland.
-    my  $code          =  $canada -> state 'Ontario'; # ON.
-    my ($code, $name)  =  $canada -> state 'BC';      # BC, British Columbia.
-    my  @all_states    =  $canada -> state;           # List of code/name pairs.
+    my  $name          =  $canada -> state ('NF');      # Newfoundland.
+    my  $code          =  $canada -> state ('Ontario'); # ON.
+    my ($code, $name)  =  $canada -> state ('BC');      # BC, British Columbia.
+    my  @all_states    =  $canada -> state;             # List code/name pairs.
 
 
 =head1 DESCRIPTION
@@ -139,14 +153,14 @@ Geography::States  --  Map states and provinces to their codes, and vica versa.
 This module lets you map states and provinces to their codes, and codes 
 to names of provinces and states.
 
-The C<Geography::States -> new ()> call takes 1 or 2 arguments. The first,
-required, argument is the country we are interested in. Current supported
-countries are I<USA>, I<Brazil>, I<Canada>, and I<The Netherlands>. If a
-second non-false argument is given, we use I<strict mode>. In non-strict
-mode, we will map territories and alternative codes as well, while we do
-not do that in strict mode. For example, if the country is B<USA>, in 
-non-strict mode, we will map B<GU> to B<Guam>, while in strict mode, neither
-B<GU> and B<Guam> will be found.
+The C<Geography::States -> new ()> call takes 1 or 2 arguments. The
+first, required, argument is the country we are interested in. Current
+supported countries are I<USA>, I<Brazil>, I<Canada>, I<The Netherlands>,
+and I<Australia>. If a second non-false argument is given, we use I<strict
+mode>. In non-strict mode, we will map territories and alternative codes
+as well, while we do not do that in strict mode. For example, if the
+country is B<USA>, in non-strict mode, we will map B<GU> to B<Guam>,
+while in strict mode, neither B<GU> and B<Guam> will be found.
 
 =head2 The state() method
 
@@ -184,6 +198,19 @@ With strict mode, I<PQ> will not be listed.
 =head1 REVISION HISTORY
 
     $Log: States.pm,v $
+    Revision 1.6  2001/04/19 23:44:39  abigail
+    Fixed syntax error in POD.
+
+    Revision 1.5  2001/04/19 23:41:59  abigail
+    + Document Australia is now supported.
+    + Australia uses codes up to length 3, addapted _c_length for that.
+    + Removed require, which was there for the INIT {}
+
+    Revision 1.4  2001/04/19 23:33:32  abigail
+    + Added data for Australia (Kirrily "Skud" Robert)
+    + Removed INIT {}; doesn't work well with mod_perl (T.J. Mather)
+    + Fixed typos/accents for Brazil (Steffen Beyer)
+
     Revision 1.3  2000/07/23 09:28:31  abigail
     Fixed dependency on hash ordering when mapping "Quebec" (it worked
        in perl5.005, but failed in perl5.6).
@@ -204,7 +231,7 @@ This package was written by Abigail, abigail@foad.org.
 
 =head1 COPYRIGHT and LICENSE
 
-This package is copyright 1999, 2000 by Abigail.
+This package is copyright 1999, 2000, 2001 by Abigail.
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -295,31 +322,31 @@ WY	Wyoming
 AC	Acre
 AL	Alagoas
 AM	Amazonas
-AP	Amapa
-BA	Baia
-CE	Ceara
+AP	Amapá
+BA	Bahia
+CE	Ceará
 DF	Distrito Federal
-ES	Espirito Santo
+ES	Espiríto Santo
 FN	Fernando de Noronha
-GO	Goias
-MA	Maranhao
+GO	Goiás
+MA	Maranhão
 MG	Minas Gerais
 MS	Mato Grosso do Sul
 MT	Mato Grosso
-PA	Para
-PB	Paraiba
+PA	Pará
+PB	Paraíba
 PE	Pernambuco
-PI	Piaui
-PR	Parana
+PI	Piauí
+PR	Paraná
 RJ	Rio de Janeiro
 RN	Rio Grande do Norte
-RO	Rondonia
+RO	Rondônia
 RR	Roraima
 RS	Rio Grande do Sul
 SC	Santa Catarina
 SE	Sergipe
-SP	Sao Paulo
-TO	Tocatins
+SP	São Paulo
+TO	Tocantins
 <Canada>
 AB	Alberta
 BC	British Columbia
@@ -347,4 +374,13 @@ OV      Overijssel
 UT      Utrecht
 ZH      Zuid Holland
 ZL      Zeeland
+# Supplied by Kirrily "Skud" Robert
+<Australia>
+ACT     Australian Capital Territory
+NSW     New South Wales
+QLD     Queensland
+SA      South Australia
+TAS     Tasmania
+VIC     Victoria
+WA      Western Australia
 __END__
