@@ -123,7 +123,7 @@ Geography::States - Map states and provinces to their codes, and vica versa.
 This module lets you map states and provinces to their codes, and codes 
 to names of provinces and states.
 
-The C<Geography::States -> new ()> call takes 1 or 2 arguments. The
+The C<< Geography::States -> new () >> call takes 1 or 2 arguments. The
 first, required, argument is the country we are interested in. Current
 supported countries are I<USA>, I<Brazil>, I<Canada>, I<The Netherlands>,
 and I<Australia>. If a second non-false argument is given, we use I<strict
