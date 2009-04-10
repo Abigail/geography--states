@@ -8,6 +8,8 @@ no  warnings 'syntax';
 
 our $VERSION = '2009040901';
 
+sub init_data;
+
 my %states;
 
 sub _c_length ($) {
@@ -28,27 +30,21 @@ sub _norm ($$) {
     $str;
 }
 
-# This was originally wrapped in an INIT block, to avoid having it
-# run when only compilation was wanted. However, that seems to fail
-# when used in combination with mod_perl.
-my $country;
-while (<DATA>) {
-    chomp;
-    last if $_ eq '__END__';
-    s/#.*//;
-    next unless /\S/;
-    if (/^<(.*)>/) {
-        $country =  lc $1;
-        $country =~ s/\s+/ /g;
-        next;
+{
+    my $data = init_data;
+
+    while (my ($country, $country_data) = each %$data) {
+        while (my ($code, $state_data) = each %$country_data) {
+            my ($strict, $name) = @$state_data;
+            my $info = [$code, $name, !$strict];
+            $states {lc $country} -> {_norm ($code, $country)} = $info;
+            $states {lc $country} -> {_norm ($name, $country)} = $info;
+        }
     }
-    my ($code, $state) = split /\s+/ => $_, 2;
-    next unless defined $state;
-    my $fake = $code =~ s/\*$//;
-    my $info = [$code, $state, $fake];
-    $states {$country} -> {_norm ($code,  $country)} = $info;
-    $states {$country} -> {_norm ($state, $country)} = $info;
 }
+
+use YAML;
+print Dump \%states;
 
 sub new {
     die "Not enough arguments for Geography::States -> new ()\n" unless @_ > 1;
@@ -200,136 +196,135 @@ THE SOFTWARE.
 
 =cut
 
-__DATA__
-# Information from USPS Abbreviations.
-<USA>
-AK	Alaska
-AL	Alabama
-AR	Arkansas
-AS*     American Samoa
-AZ	Arizona
-CA	California
-CO	Colorado
-CT	Connecticut
-DC*     District of Columbia
-DE	Delaware
-FL	Florida
-FM*     Federated States of Micronesia
-GA	Georgia
-GU*     Guam
-HI	Hawaii
-IA	Iowa
-ID	Idaho
-IL	Illinois
-IN	Indiana
-KS	Kansas
-KY	Kentucky
-LA	Louisiana
-MA	Massachusetts
-MD	Maryland
-ME	Maine
-MH*     Marshall Islands
-MI	Michigan
-MN	Minnesota
-MO	Missouri
-# I found this listed as NI as well; which makes more sense.
-MP*     Northern Mariana Islands
-MS	Mississippi
-MT	Montana
-# The USPS site doesn't list this, and MD is already taken.
-# MD*     Midway Islands
-NC	North Carolina
-ND	North Dakota
-NE	Nebraska
-NH	New Hampshire
-NJ	New Jersey
-NM	New Mexico
-NV	Nevada
-NY	New York
-OH	Ohio
-OK	Oklahoma
-OR	Oregon
-PA	Pennsylvania
-PR*     Puerto Rico
-PW*     Palau
-RI	Rhode Island
-SC	South Carolina
-SD	South Dakota
-TN	Tennessee
-TX	Texas
-UT	Utah
-VA	Virginia
-VI*     Virgin Islands
-VT	Vermont
-WA	Washington
-WI	Wisconsin
-WV	West Virginia
-WY	Wyoming
-<Brazil>
-AC	Acre
-AL	Alagoas
-AM	Amazonas
-AP	Amapá
-BA	Bahia
-CE	Ceará
-DF	Distrito Federal
-ES	Espiríto Santo
-FN	Fernando de Noronha
-GO	Goiás
-MA	Maranhão
-MG	Minas Gerais
-MS	Mato Grosso do Sul
-MT	Mato Grosso
-PA	Pará
-PB	Paraíba
-PE	Pernambuco
-PI	Piauí
-PR	Paraná
-RJ	Rio de Janeiro
-RN	Rio Grande do Norte
-RO	Rondônia
-RR	Roraima
-RS	Rio Grande do Sul
-SC	Santa Catarina
-SE	Sergipe
-SP	São Paulo
-TO	Tocantins
-<Canada>
-AB	Alberta
-BC	British Columbia
-MB	Manitoba
-NB	New Brunswick
-NF*	Newfoundland
-NL	Newfoundland and Labrador
-NS	Nova Scotia
-NT	Northwest Territories
-NU	Nunavut
-ON	Ontario
-PE	Prince Edward Island
-PQ*     Quebec
-QC	Quebec
-SK	Saskatchewan
-YT	Yukon Territory
-<The Netherlands>
-DR      Drente
-FL      Flevoland
-FR      Friesland
-GL      Gelderland
-GR      Groningen
-LB      Limburg
-NB      Noord Brabant
-NH      Noord Holland
-OV      Overijssel
-UT      Utrecht
-ZH      Zuid Holland
-ZL      Zeeland
-# Supplied by Kirrily "Skud" Robert
-<Australia>
-ACT     Australian Capital Territory
-NSW     New South Wales
-QLD     Queensland
-SA      South Australia
-TAS     Tasmania
-VIC     Victoria
-WA      Western Australia
-__END__
+
+sub init_data {
+    my $data;
+
+    $$data {'USA'} {AK} = [1 => "Alaska"];
+    $$data {'USA'} {AL} = [1 => "Alabama"];
+    $$data {'USA'} {AR} = [1 => "Arkansas"];
+    $$data {'USA'} {AS} = [0 => "American Samoa"];
+    $$data {'USA'} {AZ} = [1 => "Arizona"];
+    $$data {'USA'} {CA} = [1 => "California"];
+    $$data {'USA'} {CO} = [1 => "Colorado"];
+    $$data {'USA'} {CT} = [1 => "Connecticut"];
+    $$data {'USA'} {DC} = [0 => "District of Columbia"];
+    $$data {'USA'} {DE} = [1 => "Delaware"];
+    $$data {'USA'} {FL} = [1 => "Florida"];
+    $$data {'USA'} {FM} = [0 => "Federated States of Micronesia"];
+    $$data {'USA'} {GA} = [1 => "Georgia"];
+    $$data {'USA'} {GU} = [0 => "Guam"];
+    $$data {'USA'} {HI} = [1 => "Hawaii"];
+    $$data {'USA'} {IA} = [1 => "Iowa"];
+    $$data {'USA'} {ID} = [1 => "Idaho"];
+    $$data {'USA'} {IL} = [1 => "Illinois"];
+    $$data {'USA'} {IN} = [1 => "Indiana"];
+    $$data {'USA'} {KS} = [1 => "Kansas"];
+    $$data {'USA'} {KY} = [1 => "Kentucky"];
+    $$data {'USA'} {LA} = [1 => "Louisiana"];
+    $$data {'USA'} {MA} = [1 => "Massachusetts"];
+    $$data {'USA'} {MD} = [1 => "Maryland"];
+    $$data {'USA'} {ME} = [1 => "Maine"];
+    $$data {'USA'} {MH} = [0 => "Marshall Islands"];
+    $$data {'USA'} {MI} = [1 => "Michigan"];
+    $$data {'USA'} {MN} = [1 => "Minnesota"];
+    $$data {'USA'} {MO} = [1 => "Missouri"];
+    $$data {'USA'} {MP} = [0 => "Northern Mariana Islands"];
+    $$data {'USA'} {MS} = [1 => "Mississippi"];
+    $$data {'USA'} {MT} = [1 => "Montana"];
+    $$data {'USA'} {NC} = [1 => "North Carolina"];
+    $$data {'USA'} {ND} = [1 => "North Dakota"];
+    $$data {'USA'} {NE} = [1 => "Nebraska"];
+    $$data {'USA'} {NH} = [1 => "New Hampshire"];
+    $$data {'USA'} {NJ} = [1 => "New Jersey"];
+    $$data {'USA'} {NM} = [1 => "New Mexico"];
+    $$data {'USA'} {NV} = [1 => "Nevada"];
+    $$data {'USA'} {NY} = [1 => "New York"];
+    $$data {'USA'} {OH} = [1 => "Ohio"];
+    $$data {'USA'} {OK} = [1 => "Oklahoma"];
+    $$data {'USA'} {OR} = [1 => "Oregon"];
+    $$data {'USA'} {PA} = [1 => "Pennsylvania"];
+    $$data {'USA'} {PR} = [0 => "Puerto Rico"];
+    $$data {'USA'} {PW} = [0 => "Palau"];
+    $$data {'USA'} {RI} = [1 => "Rhode Island"];
+    $$data {'USA'} {SC} = [1 => "South Carolina"];
+    $$data {'USA'} {SD} = [1 => "South Dakota"];
+    $$data {'USA'} {TN} = [1 => "Tennessee"];
+    $$data {'USA'} {TX} = [1 => "Texas"];
+    $$data {'USA'} {UT} = [1 => "Utah"];
+    $$data {'USA'} {VA} = [1 => "Virginia"];
+    $$data {'USA'} {VI} = [0 => "Virgin Islands"];
+    $$data {'USA'} {VT} = [1 => "Vermont"];
+    $$data {'USA'} {WA} = [1 => "Washington"];
+    $$data {'USA'} {WI} = [1 => "Wisconsin"];
+    $$data {'USA'} {WV} = [1 => "West Virginia"];
+    $$data {'USA'} {WY} = [1 => "Wyoming"];
+
+    $$data {'Brazil'} {AC} = [1 => "Acre"];
+    $$data {'Brazil'} {AL} = [1 => "Alagoas"];
+    $$data {'Brazil'} {AM} = [1 => "Amazonas"];
+    $$data {'Brazil'} {AP} = [1 => "Amap\x{e1}"];
+    $$data {'Brazil'} {BA} = [1 => "Bahia"];
+    $$data {'Brazil'} {CE} = [1 => "Cear\x{e1}"];
+    $$data {'Brazil'} {DF} = [1 => "Distrito Federal"];
+    $$data {'Brazil'} {ES} = [1 => "Espir\x{ed}to Santo"];
+    $$data {'Brazil'} {FN} = [1 => "Fernando de Noronha"];
+    $$data {'Brazil'} {GO} = [1 => "Goi\x{e1}s"];
+    $$data {'Brazil'} {MA} = [1 => "Maranh\x{e3}o"];
+    $$data {'Brazil'} {MG} = [1 => "Minas Gerais"];
+    $$data {'Brazil'} {MS} = [1 => "Mato Grosso do Sul"];
+    $$data {'Brazil'} {MT} = [1 => "Mato Grosso"];
+    $$data {'Brazil'} {PA} = [1 => "Par\x{e1}"];
+    $$data {'Brazil'} {PB} = [1 => "Para\x{ed}ba"];
+    $$data {'Brazil'} {PE} = [1 => "Pernambuco"];
+    $$data {'Brazil'} {PI} = [1 => "Piau\x{ed}"];
+    $$data {'Brazil'} {PR} = [1 => "Paran\x{e1}"];
+    $$data {'Brazil'} {RJ} = [1 => "Rio de Janeiro"];
+    $$data {'Brazil'} {RN} = [1 => "Rio Grande do Norte"];
+    $$data {'Brazil'} {RO} = [1 => "Rond\x{f4}nia"];
+    $$data {'Brazil'} {RR} = [1 => "Roraima"];
+    $$data {'Brazil'} {RS} = [1 => "Rio Grande do Sul"];
+    $$data {'Brazil'} {SC} = [1 => "Santa Catarina"];
+    $$data {'Brazil'} {SE} = [1 => "Sergipe"];
+    $$data {'Brazil'} {SP} = [1 => "S\x{e3}o Paulo"];
+    $$data {'Brazil'} {TO} = [1 => "Tocantins"];
+
+    $$data {'Canada'} {AB} = [1 => "Alberta"];
+    $$data {'Canada'} {BC} = [1 => "British Columbia"];
+    $$data {'Canada'} {MB} = [1 => "Manitoba"];
+    $$data {'Canada'} {NB} = [1 => "New Brunswick"];
+    $$data {'Canada'} {NF} = [0 => "Newfoundland"];
+    $$data {'Canada'} {NL} = [1 => "Newfoundland and Labrador"];
+    $$data {'Canada'} {NS} = [1 => "Nova Scotia"];
+    $$data {'Canada'} {NT} = [1 => "Northwest Territories"];
+    $$data {'Canada'} {NU} = [1 => "Nunavut"];
+    $$data {'Canada'} {ON} = [1 => "Ontario"];
+    $$data {'Canada'} {PE} = [1 => "Prince Edward Island"];
+    $$data {'Canada'} {PQ} = [0 => "Quebec"];
+    $$data {'Canada'} {QC} = [1 => "Quebec"];
+    $$data {'Canada'} {SK} = [1 => "Saskatchewan"];
+    $$data {'Canada'} {YT} = [1 => "Yukon Territory"];
+
+    $$data {'The Netherlands'} {DR} = [1 => "Drente"];
+    $$data {'The Netherlands'} {FL} = [1 => "Flevoland"];
+    $$data {'The Netherlands'} {FR} = [1 => "Friesland"];
+    $$data {'The Netherlands'} {GL} = [1 => "Gelderland"];
+    $$data {'The Netherlands'} {GR} = [1 => "Groningen"];
+    $$data {'The Netherlands'} {LB} = [1 => "Limburg"];
+    $$data {'The Netherlands'} {NB} = [1 => "Noord Brabant"];
+    $$data {'The Netherlands'} {NH} = [1 => "Noord Holland"];
+    $$data {'The Netherlands'} {OV} = [1 => "Overijssel"];
+    $$data {'The Netherlands'} {UT} = [1 => "Utrecht"];
+    $$data {'The Netherlands'} {ZH} = [1 => "Zuid Holland"];
+    $$data {'The Netherlands'} {ZL} = [1 => "Zeeland"];
+
+    $$data {'Australia'} {ACT} = [1 => "Australian Capital Territory"];
+    $$data {'Australia'} {NSW} = [1 => "New South Wales"];
+    $$data {'Australia'} {QLD} = [1 => "Queensland"];
+    $$data {'Australia'} {SA}  = [1 => "South Australia"];
+    $$data {'Australia'} {TAS} = [1 => "Tasmania"];
+    $$data {'Australia'} {VIC} = [1 => "Victoria"];
+    $$data {'Australia'} {WA}  = [1 => "Western Australia"];
+
+    $data;
+}
