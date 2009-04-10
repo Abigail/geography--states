@@ -1,3 +1,6 @@
+Version ????
+- Removed __DATA__ section.
+----
 Version 2009040901
 - Moved to git and github.
 - Modernization.
