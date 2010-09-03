@@ -2,3 +2,6 @@
 .gitignore
 MANIFEST.SKIP
 Releases
+lib/Geography/convert
+lib/Geography/data
+lib/Geography/out
