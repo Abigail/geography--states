@@ -43,8 +43,6 @@ sub _norm ($$) {
     }
 }
 
-use YAML;
-print Dump \%states;
 
 sub new {
     die "Not enough arguments for Geography::States -> new ()\n" unless @_ > 1;
